@@ -1,0 +1,93 @@
+logstash 插件
+https://github.com/logstash-plugins/
+
+logstash 插件 安装
+http://www.21yunwei.com/archives/5281
+
+
+  <!-- Logstash 日志配置 -->
+	<appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>127.0.0.1:4560</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+
+    注意：如果你logstash和elasticsearch都运行在linux上就不用设置，中文不会乱码。如果你logstash运行在windows上，那么不管elasticsearch在windows还是linux上，都要设置编码。我没有测试logstash在linux上，elasticsearch在windows上的情况。
+
+    logstash-codec-json_lines
+
+
+      <!-- Logstash 日志配置 -->
+    	<appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>127.0.0.1:4560</destination>
+            <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+        </appender>
+
+
+        date {
+          match => ["timestamp" , "yyyy-MM-dd HH:mm:ss Z"]
+        }
+
+
+        input {
+            file {
+                path => ["/data/logs/error/program.error.log"]
+                type => "error"
+                tags => ["error"]
+                start_position => "beginning"
+                #sincedb_path => "/dev/null"
+                codec => "json"
+            }
+            file {
+                path => ["/data/logs/error/program.warning.log"]
+                type => "warning"
+                tags => ["warning"]
+                start_position => "beginning"
+                #sincedb_path => "/dev/null"
+                codec => "json"
+            }
+            #file {
+            #    path => ["/data/logs/access/nginx.access.log"]
+            #    type => "access"
+            #    tags => ["access"]
+            #    start_position => "beginning"
+            #    codec => "json"
+            #}
+        }
+        output {
+            if "error" in [tags] {
+                elasticsearch {
+                    hosts  => "10.0.0.23:9200"
+                    index  => "error_log"
+                }
+                stdout { codec=> rubydebug }
+            }
+            if "warning" in [tags] {
+                elasticsearch {
+                    hosts  => "10.0.0.23:9200"
+                    index  => "warning_log"
+                }
+                stdout { codec=> rubydebug }
+            }
+            if "access" in [tags] {
+                elasticsearch {
+                    hosts  => "10.0.0.23:9200"
+                    #index  => "access_log"
+                    index => "access_log_%{+YYYY.MM.dd}"
+                }
+                stdout { }
+            }
+        }
+
+
+从文件读取 input
+
+filter 修改为 json 中文分词
+
+logstash elasticsearch kibana
+
+提供日志查询服务接口
+
+什么人 在 什么时间 通过 什么设备 访问 什么应用 进行 什么操作
+
+curl -XPUT localhost:9200/_template/elastic -d 
