@@ -58,3 +58,15 @@ rabbitmqctl stop 停止服务
 - 1883, 8883: (MQTT clients without and with TLS, if the MQTT plugin is enabled
 - 15674: STOMP-over-WebSockets clients (only if the Web STOMP plugin is enabled)
 - 15675: MQTT-over-WebSockets clients (only if the Web MQTT plugin is enabled)
+
+
+
+## 问题
+rabbitmq-server : Depends: erlang-nox (>= 1:16.b.3) but it is not going to be installed or esl-erlang but it is not installable
+
+```
+wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+sudo dpkg -i erlang-solutions_1.0_all.deb
+sudo apt-get update
+sudo apt-get install esl-erlang=1:19.3.6
+```
