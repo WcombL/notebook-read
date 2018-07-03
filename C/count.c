@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int mian(){
+int main(){
     int c, b1=0, t1=0, n1=0;
 
     printf("Input some characters, then pass Ctril+D.\n");
@@ -15,5 +15,5 @@ int mian(){
     }
     printf("Count of blanks is %d, count of tabs is %d, count of newlines is %d.\n", b1, t1, n1);
 
-    return 0;
+// return 0;
 }
